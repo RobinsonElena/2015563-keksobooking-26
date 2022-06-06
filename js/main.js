@@ -1,7 +1,7 @@
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 
 const getRandomIntInclusive = (min, max) => {
-  if (min < 0 || max < min) {
+  if (min < 0 || max <= min) {
     throw new RangeError ('Диапазон может быть только положительный, включая ноль. Введите корректный диапазон чисел');
   }
 
@@ -14,11 +14,11 @@ getRandomIntInclusive(0, 10);
 
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/number/tofixed
 
-const getRandomInclusive = (min, max, digits=5) => {
-  if (min < 0 || max < min) {
+const getRandomInclusive = (min, max, digits = 5) => {
+  if (min < 0 || max <= min) {
     throw new RangeError ('Диапазон может быть только положительный, включая ноль. Введите корректный диапазон чисел');
   }
-  return +(Math.floor(Math.random() * (max - min + 1)) + min).toFixed(digits); //Максимум и минимум включаются
+  return +(Math.random() * (max - min + 1) + min).toFixed(digits); //Максимум и минимум включаются
 };
 
-getRandomInclusive(0, 10, 5);
+getRandomInclusive(0, 10);
