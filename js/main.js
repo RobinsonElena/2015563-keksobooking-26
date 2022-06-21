@@ -118,4 +118,4 @@ const createRentOffers = () => {   //Функция создания объяв�
 
 const rentOffers = () => Array.from({length: RENT_OFFER_COUNT}, createRentOffers);   //Функция создания массива из объявлений
 
-console.log(rentOffers());
+rentOffers();
