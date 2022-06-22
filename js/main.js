@@ -1,24 +1,119 @@
-// https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+const TITLES = [
+  'В центре',
+  'Бизнес-центр',
+  'High-tech',
+  'На окраине',
+  'Подходит всем',
+];
 
-const getRandomIntInclusive = (min, max) => {
+const TYPES = [
+  'palace',
+  'flat',
+  'house',
+  'bungalow',
+  'hotel',
+];
+
+const TIMES = [
+  '12:00',
+  '13:00',
+  '14:00',
+];
+
+const FEATURES = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner',
+];
+
+const DESCRIPTION = [
+  'Евродизайн',
+  'В старых традициях',
+  'С видом на парк',
+  'Дружелюбный к животным',
+  'В дали от цивилизации',
+];
+
+const PHOTOS = [
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
+];
+
+const LAT_MIN = 35.65000;
+const LAT_MAX = 35.70000;
+const LNG_MIN = 139.70000;
+const LNG_MAX = 139.80000;
+
+const RENT_OFFER_COUNT = 10;
+
+const getRandomPositiveInteger = (a, b) => {   //Функция генерации положительного числа
+  if (a < 0 || b <= a) {
+    throw new RangeError ('Диапазон может быть только положительный, включая ноль. Введите корректный диапазон чисел');
+  }
+  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+  const result = Math.random() * (upper - lower + 1) + lower;
+  return Math.floor(result);
+};
+
+const getRandomFloat = (min, max, digits = 5) => {   //Функция генерации положительного числа с плавающей точкой
   if (min < 0 || max <= min) {
     throw new RangeError ('Диапазон может быть только положительный, включая ноль. Введите корректный диапазон чисел');
   }
-
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+  return +(Math.random() * (max - min) + min).toFixed(digits); //Максимум и минимум включаются
 };
 
-getRandomIntInclusive(0, 10);
+const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];   //Функция генерации элемента из массива
 
-// https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/number/tofixed
-
-const getRandomInclusive = (min, max, digits = 5) => {
-  if (min < 0 || max <= min) {
-    throw new RangeError ('Диапазон может быть только положительный, включая ноль. Введите корректный диапазон чисел');
+const getShuffledArray = (elements) => {   //Функция перемешивания и генерации нового массива
+  const newArray = elements.slice();
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
   }
-  return +(Math.random() * (max - min + 1) + min).toFixed(digits); //Максимум и минимум включаются
+  return newArray;
 };
 
-getRandomInclusive(0, 10);
+const createRentOffer = (index) => {
+  const formattedAvatarNumber = index < 10 ? `0${index}` : index;
+
+  const location = {
+    lat: getRandomFloat(LAT_MIN, LAT_MAX),
+    lng: getRandomFloat(LNG_MIN, LNG_MAX)
+  };
+
+  return {
+    author: {
+      avatar: `img/avatars/user${formattedAvatarNumber}.png`
+    },
+    offer: {
+      title: getRandomArrayElement(TITLES),
+      address: `${location.lat}, ${location.lng}`,
+      price: getRandomPositiveInteger(1, 100000),
+      type: getRandomArrayElement(TYPES),
+      rooms: getRandomPositiveInteger(1, 3),
+      guests: getRandomPositiveInteger(0, 3),
+      checkin: getRandomArrayElement(TIMES),
+      checkout: getRandomArrayElement(TIMES),
+      features: getShuffledArray(FEATURES),
+      description: getRandomArrayElement(DESCRIPTION),
+      photos: getShuffledArray(PHOTOS),
+    },
+    location
+  };
+};
+
+const createRentOffers = () => {
+  const result = [];
+  for (let i = 1; i <= RENT_OFFER_COUNT; i++) {
+    const offer = createRentOffer(i);
+    result.push(offer);
+  }
+  return result;
+};
+
+createRentOffers();
