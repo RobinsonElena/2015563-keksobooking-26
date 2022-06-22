@@ -78,16 +78,9 @@ const getShuffledArray = (elements) => {   //Функция перемешива
   return newArray;
 };
 
-let avatarNumber = 0;
-const getAvatarNumber = () => {   //Функция для получения неповторяющегося адреса изображения с "0" для однозначных
-  for (let i = 1; i <= RENT_OFFER_COUNT; i++){
-    avatarNumber += 1;
-    const formattedAvatarNumber = (avatarNumber < 10) ? `0${avatarNumber}` : avatarNumber;
-    return `img/avatars/user${formattedAvatarNumber}.png`;
-  }
-};
+const createRentOffer = (index) => {
+  const formattedAvatarNumber = index < 10 ? `0${index}` : index;
 
-const createRentOffers = () => {   //Функция создания объявления
   const location = {
     lat: getRandomFloat(LAT_MIN, LAT_MAX),
     lng: getRandomFloat(LNG_MIN, LNG_MAX)
@@ -95,9 +88,8 @@ const createRentOffers = () => {   //Функция создания объяв�
 
   return {
     author: {
-      avatar: getAvatarNumber()
+      avatar: `img/avatars/user${formattedAvatarNumber}.png`
     },
-
     offer: {
       title: getRandomArrayElement(TITLES),
       address: `${location.lat}, ${location.lng}`,
@@ -111,11 +103,17 @@ const createRentOffers = () => {   //Функция создания объяв�
       description: getRandomArrayElement(DESCRIPTION),
       photos: getShuffledArray(PHOTOS),
     },
-
     location
   };
 };
 
-const rentOffers = () => Array.from({length: RENT_OFFER_COUNT}, createRentOffers);   //Функция создания массива из объявлений
+const createRentOffers = () => {
+  const result = [];
+  for (let i = 1; i <= RENT_OFFER_COUNT; i++) {
+    const offer = createRentOffer(i);
+    result.push(offer);
+  }
+  return result;
+};
 
-rentOffers();
+createRentOffers();
