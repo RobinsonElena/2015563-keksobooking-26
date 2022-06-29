@@ -1,4 +1,9 @@
 import {createRentOffers} from './data.js';
-import {createRentOffersCards} from './card.js';
+import {createRentOfferCard} from './card.js';
 
-createRentOffersCards(createRentOffers);
+const canvas = document.querySelector('#map-canvas');
+
+const similarRentOffersCards = createRentOffers();
+const card = createRentOfferCard(similarRentOffersCards[0]);
+
+canvas.append(card);
