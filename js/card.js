@@ -14,6 +14,11 @@ const createRentOfferCard = (ad) => {
   const { author, offer } = ad;
 
   const cardElement = cardTemplate.cloneNode(true);
+  const photoElements = cardElement.querySelector('.popup__photos');
+  const photoTemplate = cardElement.querySelector('.popup__photo');
+  const descriptionElement = cardElement.querySelector('.popup__description');
+  const featureElements = cardElement.querySelectorAll('.popup__feature');
+
   cardElement.querySelector('.popup__avatar').src = author.avatar;
   cardElement.querySelector('.popup__title').textContent = offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offer.address;
@@ -22,32 +27,30 @@ const createRentOfferCard = (ad) => {
   cardElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
   cardElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
 
-  const photoElements = cardElement.querySelector('.popup__photos');
-  const photoTemplate = cardElement.querySelector('.popup__photo');
-  photoElements.innerHTML = '';
-  offer.photos.forEach ((photo) => {
-    const PhotosElement = photoTemplate.cloneNode(true);
-    PhotosElement.src = photo;
-    photoElements.appendChild(PhotosElement);
-  });
-
-  const descriptionElement = cardElement.querySelector('.popup__description');
-  if (descriptionElement) {
-    descriptionElement.textContent = offer.description;
+  if (offer.photos) {
+    photoElements.innerHTML = '';
+    offer.photos.forEach((photo) => {
+      const photosElement = photoTemplate.cloneNode(true);
+      photosElement.src = photo;
+      photoElements.appendChild(photosElement);
+    });
+  } else {
+    photoElements.remove();
   }
-  else {
+
+  if (offer.description) {
+    descriptionElement.textContent = offer.description;
+  } else {
     descriptionElement.remove();
   }
 
-  const featureElements = cardElement.querySelectorAll('.popup__feature');
-  featureElements.forEach((featureElement) => {
-    const isNecessary = offer.features.some(
-      (feature) => featureElement.classList.contains(`popup__feature--${feature}`),
-    );
-    if (!isNecessary) {
-      featureElement.remove();
-    }
-  });
+  if (offer.features) {
+    featureElements.forEach((featureElement) => {
+      offer.features.some((feature) => featureElement.classList.contains(`popup__feature--${feature}`));
+    });
+  } else {
+    featureElements.remove();
+  }
 
   return cardElement;
 };
