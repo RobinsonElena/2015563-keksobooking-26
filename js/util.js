@@ -1,4 +1,4 @@
-const getRandomPositiveInteger = (a, b) => {   //Функция генерации положительного числа
+const getRandomPositiveInteger = (a, b) => {
   if (a < 0 || b <= a) {
     throw new RangeError ('Диапазон может быть только положительный, включая ноль. Введите корректный диапазон чисел');
   }
@@ -8,16 +8,16 @@ const getRandomPositiveInteger = (a, b) => {   //Функция генераци
   return Math.floor(result);
 };
 
-const getRandomFloat = (min, max, digits = 5) => {   //Функция генерации положительного числа с плавающей точкой
+const getRandomFloat = (min, max, digits = 5) => {
   if (min < 0 || max <= min) {
     throw new RangeError ('Диапазон может быть только положительный, включая ноль. Введите корректный диапазон чисел');
   }
-  return +(Math.random() * (max - min) + min).toFixed(digits); //Максимум и минимум включаются
+  return +(Math.random() * (max - min) + min).toFixed(digits);
 };
 
-const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];   //Функция генерации элемента из массива
+const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
-const getShuffledArray = (elements) => {   //Функция перемешивания и генерации нового массива
+const getShuffledArray = (elements) => {
   const newArray = elements.slice();
   for (let i = newArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
