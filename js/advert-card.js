@@ -14,10 +14,10 @@ const createRentOfferCard = (ad) => {
   const { author, offer } = ad;
 
   const cardElement = cardTemplate.cloneNode(true);
-  const photoElements = cardElement.querySelector('.popup__photos');
+  const photoList = cardElement.querySelector('.popup__photos');
   const photoTemplate = cardElement.querySelector('.popup__photo');
   const descriptionElement = cardElement.querySelector('.popup__description');
-  const featureElements = cardElement.querySelectorAll('.popup__feature');
+  const featureList = cardElement.querySelectorAll('.popup__feature');
 
   cardElement.querySelector('.popup__avatar').src = author.avatar;
   cardElement.querySelector('.popup__title').textContent = offer.title;
@@ -27,15 +27,15 @@ const createRentOfferCard = (ad) => {
   cardElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
   cardElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
 
-  if (offer.photos) {
-    photoElements.innerHTML = '';
+  if (offer.photos && offer.photos.length > 0) {
+    photoList.innerHTML = '';
     offer.photos.forEach((photo) => {
-      const photosElement = photoTemplate.cloneNode(true);
-      photosElement.src = photo;
-      photoElements.appendChild(photosElement);
+      const photoElement = photoTemplate.cloneNode(true);
+      photoElement.src = photo;
+      photoList.appendChild(photoElement);
     });
   } else {
-    photoElements.remove();
+    photoList.remove();
   }
 
   if (offer.description) {
@@ -44,12 +44,12 @@ const createRentOfferCard = (ad) => {
     descriptionElement.remove();
   }
 
-  if (offer.features) {
-    featureElements.forEach((featureElement) => {
+  if (offer.features && offer.photos.length > 0) {
+    featureList.forEach((featureElement) => {
       offer.features.some((feature) => featureElement.classList.contains(`popup__feature--${feature}`));
     });
   } else {
-    featureElements.remove();
+    featureList.remove();
   }
 
   return cardElement;
