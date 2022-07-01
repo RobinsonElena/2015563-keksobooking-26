@@ -26,9 +26,16 @@ const getShuffledArray = (elements) => {
   return newArray;
 };
 
+const toggleElements = (elements, value) => {
+  elements.forEach((element) => {
+    element.disabled = value;
+  });
+};
+
 export {
   getRandomPositiveInteger,
   getRandomFloat,
   getRandomArrayElement,
   getShuffledArray,
+  toggleElements,
 };

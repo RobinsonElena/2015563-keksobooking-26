@@ -1,29 +1,25 @@
+import {toggleElements} from './util.js';
+
 const filterElement = document.querySelector('.map__filters');
-const filterList = document.querySelectorAll('.map__filters select, .map__filters fieldset');
+const filterList = filterElement.querySelectorAll('.map__filters select, .map__filters fieldset');
 const formElement = document.querySelector('.ad-form');
-const formList = document.querySelectorAll('.ad-form');
+const formList = formElement.querySelectorAll('.ad-form fieldset');
 
 const deactivatePage = () => {
   filterElement.classList.add('map__filters--disabled');
-  filterElement.disabled = true;
-  //filterList.forEach((element) => {
-  //  element.disabled = true;
-  //});
+  toggleElements(filterList, true);
   formElement.classList.add('ad-form--disabled');
-  formList.forEach((element) => {
-    element.disabled = true;
-  });
+  toggleElements(formList, true);
 };
 
-const activatePage = () => {
+const activateFilters = () => {
   filterElement.classList.remove('map__filters--disabled');
-  filterList.forEach((element) => {
-    element.disabled = false;
-  });
-  formElement.classList.remove('ad-form--disabled');
-  formList.forEach((element) => {
-    element.disabled = false;
-  });
+  toggleElements(filterList, false);
 };
 
-export {deactivatePage, activatePage};
+const activateForm = () => {
+  formElement.classList.remove('ad-form--disabled');
+  toggleElements(formList, false);
+};
+
+export {deactivatePage, activateFilters, activateForm};
