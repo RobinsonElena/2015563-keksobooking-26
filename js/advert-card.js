@@ -1,9 +1,9 @@
 const typeDictionary = {
-  palace: 'Дворец',
-  flat: 'Квартира',
-  house: 'Дом',
   bungalow: 'Бунгало',
+  flat: 'Квартира',
   hotel: 'Отель',
+  house: 'Дом',
+  palace: 'Дворец',
 };
 
 const cardTemplate = document.querySelector('#card')
@@ -55,4 +55,4 @@ const createRentOfferCard = (ad) => {
   return cardElement;
 };
 
-export {createRentOfferCard};
+export {createRentOfferCard, typeDictionary};
