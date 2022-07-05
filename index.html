@@ -86,14 +86,25 @@
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="title">Заголовок объявления</label>
-          <input id="title" type="text" name="title" placeholder="Милая, уютная квартирка в центре Токио" minlength="30" maxlength="100" required
+          <input id="title"
+          type="text"
+          name="title"
+          placeholder="Милая, уютная квартирка в центре Токио"
+          minlength="30"
+          maxlength="100"
+          required
           data-pristine-required-message="Обязательное поле"
           data-pristine-minlength-message="Минимальная длина 30 символа"
           data-pristine-maxlength-message="Максимальная длина 100 символов">
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес (координаты)</label>
-          <input id="address" type="text" name="address" readonly required value="35.70292, 139.68531">
+          <input id="address"
+          type="text"
+          name="address"
+          readonly
+          required
+          data-pristine-required-message="Обязательное поле">
         </fieldset>
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="type">Тип жилья</label>
@@ -107,7 +118,12 @@
         </fieldset>
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" type="number" name="price" placeholder="5000" min="0" max="100000" required
+          <input id="price"
+          type="number"
+          name="price"
+          placeholder="5000"
+          min="0" max="100000"
+          required
           data-pristine-required-message="Обязательное поле"
           data-pristine-min-message="Минимальная цена 0 руб."
           data-pristine-max-message="Максимальная цена 100000 руб.">

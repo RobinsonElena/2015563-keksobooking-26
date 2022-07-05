@@ -1,6 +1,6 @@
 import {createRentOffers} from './data.js';
 import {createRentOfferCard} from './advert-card.js';
-import {activateFilters, activateForm} from './advert-form.js';
+import {activateFilters, activateForm, initValidation} from './advert-form.js';
 
 const canvas = document.querySelector('#map-canvas');
 
@@ -12,3 +12,4 @@ canvas.append(card);
 //deactivatePage();
 activateFilters();
 activateForm();
+initValidation();
