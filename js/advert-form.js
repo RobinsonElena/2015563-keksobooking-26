@@ -1,5 +1,4 @@
 import {toggleElements} from './util.js';
-import {typeDictionary} from './advert-card.js';
 
 const MIN_PRICE = {
   bungalow: '0',
@@ -49,10 +48,17 @@ const initValidation = () => {
     errorTextClass: 'ad-form__error',
   }, false);
 
-  const validatePrice = () => MIN_PRICE[typeHousing.value];
-  const getMinPriceMessage = () => `${typeDictionary[typeHousing.value]} - минимальная цена за ночь ${validatePrice}`;
+  const validatePrice = (value) => parseInt(value, 10) >= MIN_PRICE[typeHousing.value];
+  const getMinPriceMessage = () => `Минимальная цена ${MIN_PRICE[typeHousing.value]}`;
 
   pristine.addValidator(priceHousing, validatePrice, getMinPriceMessage);
+
+  const onTypeHousingChange = () => {
+    priceHousing.placeholder = MIN_PRICE[typeHousing.value];
+    pristine.validate(priceHousing);
+  };
+
+  typeHousing.addEventListener('change', onTypeHousingChange);
 
   const validateCapacity = () => {CAPACITY_OPTIONS[roomAmount.value].includes(capacityAmount.value);};
   const getCapacityMessage = () => {
