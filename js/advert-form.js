@@ -23,6 +23,8 @@ const typeHousing = formElement.querySelector('#type');
 const priceHousing = formElement.querySelector('#price');
 const roomAmount = formElement.querySelector('#room_number');
 const capacityAmount = formElement.querySelector('#capacity');
+const timeElement = document.querySelector('.ad-form__element--time');
+const timeList = timeElement.querySelectorAll('select');
 
 const deactivatePage = () => {
   filterElement.classList.add('map__filters--disabled');
@@ -41,15 +43,32 @@ const activateForm = () => {
   toggleElements(formList, false);
 };
 
+const validatePrice = (value) => parseInt(value, 10) >= MIN_PRICE[typeHousing.value];
+const getMinPriceMessage = () => `Минимальная цена ${MIN_PRICE[typeHousing.value]}`;
+
+const validateCapacity = () => {CAPACITY_OPTIONS[roomAmount.value].includes(capacityAmount.value);};
+const getCapacityMessage = () => {
+  if (+(roomAmount.value) === 100) {
+    return 'Комнаты не для гостей';
+  } else if (+(capacityAmount.value) > +(roomAmount.value)) {
+    return 'Гостей не больше, чем комнат';
+  }
+};
+
+const onTimeChange = (evt) => {
+  timeList.forEach((timeChange) => {
+    timeChange.value = evt.target.value;
+  });
+};
+
+timeElement.addEventListener('change', onTimeChange);
+
 const initValidation = () => {
   const pristine = new Pristine(formElement, {
     classTo: 'ad-form__element',
     errorTextParent: 'ad-form__element',
     errorTextClass: 'ad-form__error',
   }, false);
-
-  const validatePrice = (value) => parseInt(value, 10) >= MIN_PRICE[typeHousing.value];
-  const getMinPriceMessage = () => `Минимальная цена ${MIN_PRICE[typeHousing.value]}`;
 
   pristine.addValidator(priceHousing, validatePrice, getMinPriceMessage);
 
@@ -59,15 +78,6 @@ const initValidation = () => {
   };
 
   typeHousing.addEventListener('change', onTypeHousingChange);
-
-  const validateCapacity = () => {CAPACITY_OPTIONS[roomAmount.value].includes(capacityAmount.value);};
-  const getCapacityMessage = () => {
-    if (+(roomAmount.value) === 100) {
-      return 'Комнаты не для гостей';
-    } else if (+(capacityAmount.value) > +(roomAmount.value)) {
-      return 'Гостей не больше, чем комнат';
-    }
-  };
 
   pristine.addValidator(roomAmount, validateCapacity, getCapacityMessage);
   pristine.addValidator(capacityAmount, validateCapacity, getCapacityMessage);
