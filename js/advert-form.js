@@ -61,8 +61,6 @@ const onTimeChange = (evt) => {
   });
 };
 
-timeElement.addEventListener('change', onTimeChange);
-
 const initValidation = () => {
   const pristine = new Pristine(formElement, {
     classTo: 'ad-form__element',
@@ -81,6 +79,8 @@ const initValidation = () => {
 
   pristine.addValidator(roomAmount, validateCapacity, getCapacityMessage);
   pristine.addValidator(capacityAmount, validateCapacity, getCapacityMessage);
+
+  timeElement.addEventListener('change', onTimeChange);
 
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
