@@ -88,4 +88,30 @@ const initValidation = () => {
   });
 };
 
-export {deactivatePage, activateFilters, activateForm, initValidation};
+const sliderElement = document.querySelector('.ad-form__slider');
+
+const createSlider = () => {
+  noUiSlider.create(sliderElement, {
+    range: {
+      min: 0,
+      max: 100000,
+    },
+    start: 0,
+    step: 1,
+    connect: 'lower',
+    format: {
+      to: (value) => value.toFixed(0),
+      from: (value) => parseFloat(value),
+    },
+  });
+
+  sliderElement.noUiSlider.on('update', () => {
+    priceHousing.value = sliderElement.noUiSlider.get();
+  });
+
+  priceHousing.addEventListener('change', (evt) => {
+    sliderElement.noUiSlider.set(evt.target.value);
+  });
+};
+
+export {deactivatePage, activateFilters, activateForm, initValidation, createSlider};
