@@ -1,10 +1,7 @@
 import {initMap} from './map.js';
-import {initValidation, createSlider} from './advert-form.js';
+import {deactivatePage, initValidation, createSlider} from './advert-form.js';
 
-
-//deactivatePage();
-//activateFilters();
-//activateForm();
+deactivatePage();
 initMap();
 initValidation();
 createSlider();

@@ -8,6 +8,8 @@ const MIN_PRICE = {
   palace: '10000',
 };
 
+const MAX_PRICE = 100000;
+
 const CAPACITY_OPTIONS = {
   1: [1],
   2: [1, 2],
@@ -25,6 +27,7 @@ const roomAmount = formElement.querySelector('#room_number');
 const capacityAmount = formElement.querySelector('#capacity');
 const timeElement = document.querySelector('.ad-form__element--time');
 const timeList = timeElement.querySelectorAll('select');
+const sliderElement = document.querySelector('.ad-form__slider');
 
 const deactivatePage = () => {
   filterElement.classList.add('map__filters--disabled');
@@ -61,6 +64,11 @@ const onTimeChange = (evt) => {
   });
 };
 
+const onTypeHousingChange = () => {
+  priceHousing.placeholder = MIN_PRICE[typeHousing.value];
+  priceHousing.min = MIN_PRICE[typeHousing.value];
+};
+
 const initValidation = () => {
   const pristine = new Pristine(formElement, {
     classTo: 'ad-form__element',
@@ -69,32 +77,22 @@ const initValidation = () => {
   }, false);
 
   pristine.addValidator(priceHousing, validatePrice, getMinPriceMessage);
-
-  const onTypeHousingChange = () => {
-    priceHousing.placeholder = MIN_PRICE[typeHousing.value];
-    pristine.validate(priceHousing);
-  };
-
-  typeHousing.addEventListener('change', onTypeHousingChange);
-
   pristine.addValidator(roomAmount, validateCapacity, getCapacityMessage);
   pristine.addValidator(capacityAmount, validateCapacity, getCapacityMessage);
 
   timeElement.addEventListener('change', onTimeChange);
-
+  typeHousing.addEventListener('change', onTypeHousingChange);
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     pristine.validate();
   });
 };
 
-const sliderElement = document.querySelector('.ad-form__slider');
-
 const createSlider = () => {
   noUiSlider.create(sliderElement, {
     range: {
       min: 0,
-      max: 100000,
+      max: MAX_PRICE,
     },
     start: 0,
     step: 1,

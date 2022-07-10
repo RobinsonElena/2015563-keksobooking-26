@@ -1,89 +1,94 @@
 import {createRentOffers} from './data.js';
 import {createRentOfferCard} from './advert-card.js';
-import {activateFilters, activateForm} from './advert-form.js';
+import {activateForm} from './advert-form.js';
+
+const lat = 35.70292;
+const lng = 139.68531;
+const scale = 12;
 
 const mainPin = {
   iconUrl: './img/main-pin.svg',
-  iconSize: [52, 52],
+  iconSize: {
+    width: 52,
+    height: 52,
+  },
 };
 
 const adPin = {
   iconUrl: './img/pin.svg',
-  iconSize: [40, 40],
+  iconSize: {
+    width: 40,
+    height: 40,
+  },
 };
 
-const canvas = document.querySelector('#map-canvas');
+const layer = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
 const addressField = document.querySelector('#address');
+addressField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
-const initMap = () => {
-  const map = L.map('map-canvas')
-    .on('load', () => {
-      activateFilters(true);
-      activateForm(true);
-    })
-    .setView({
-      lat: 35.70292,
-      lng: 139.68531,
-    }, 15);
+const mainPinIcon = L.icon({
+  iconUrl: mainPin.iconUrl,
+  iconSize: mainPin.iconSize,
+  iconAnchor: [mainPin.iconSize.width / 2, mainPin.iconSize.height],
+});
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+const adPinIcon = L.icon({
+  iconUrl: adPin.iconUrl,
+  iconSize: adPin.iconSize,
+  iconAnchor: [adPin.iconSize.width / 2, adPin.iconSize.height],
+});
 
-  const mainPinIcon = L.icon({
-    iconUrl: mainPin.iconUrl,
-    iconSize: mainPin.iconSize,
-    iconAnchor: [mainPin.iconSize / 2, mainPin.iconSize],
-  });
+const map = L.map('map-canvas');
+const markerGroup = L.layerGroup().addTo(map);
 
-  const mainPinMarker = L.marker(
+const mainPinMarker = L.marker(
+  {
+    lat,
+    lng,
+  },
+  {
+    draggable: true,
+    icon: mainPinIcon,
+  },
+);
+
+const rentRentOffersCards = createRentOffers();
+
+const renderMarkers = (author, offer, location) => {
+  const adMarker = L.marker(
     {
-      lat: 35.70292,
-      lng: 139.68531,
+      lat: location.lat,
+      lng: location.lng,
     },
     {
-      draggable: true,
-      icon: mainPinIcon,
+      icon: adPinIcon,
     },
   );
 
+  adMarker
+    .addTo(markerGroup)
+    .bindPopup(createRentOfferCard(author, offer));
+};
+
+const initMap = () => {
+  map.on('load', () => {
+    activateForm(true);
+  })
+    .setView({
+      lat,
+      lng,
+    }, scale);
+
+  L.tileLayer(layer, attribution).addTo(map);
+
   mainPinMarker.addTo(map);
 
-  const adPinIcon = L.icon({
-    iconUrl: adPin.iconUrl,
-    iconSize: adPin.iconSize,
-    iconAnchor: [adPin.iconSize / 2, adPin.iconSize],
-  });
+  rentRentOffersCards.forEach(({author, offer, location}) => renderMarkers(author, offer, location));
 
-  const markerGroup = L.layerGroup().addTo(map);
-
-  const createMarkers = (autor, offer, location) => {
-    const adMarker = L.marker(
-      {
-        lat: location.lat,
-        lng: location.lng,
-      },
-      {
-        icon: adPinIcon,
-      },
-    );
-
-    adMarker
-      .addTo(markerGroup)
-      .bingPopup(createRentOfferCard(autor, offer));
-  };
-
-  const similarRentOffersCards = createRentOffers();
-  const card = createRentOfferCard(similarRentOffersCards[0]);
-
-  canvas.append(card);
-
-  similarRentOffersCards.forEach(({autor, offer, location}) => {
-    createMarkers(autor, offer, location);
-  });
-
-  mainPinMarker.on('moveend', (evt) => {
-    addressField.value = evt.target.getLatLng();
+  mainPinMarker.on('move', (evt) => {
+    addressField.value = `${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`;
   });
 };
 
