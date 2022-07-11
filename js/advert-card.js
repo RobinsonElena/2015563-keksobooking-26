@@ -10,8 +10,7 @@ const cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-const createRentOfferCard = (ad) => {
-  const { author, offer } = ad;
+const createRentOfferCard = (author, offer) => {
 
   const cardElement = cardTemplate.cloneNode(true);
   const photoList = cardElement.querySelector('.popup__photos');
