@@ -1,4 +1,4 @@
-const GET_URL = 'https://26.javascript.pages.academy/keksobooking/ata';
+const GET_URL = 'https://26.javascript.pages.academy/keksobooking/data';
 const SET_URL = 'https://26.javascript.pages.academy/keksobooking';
 
 const getData = (onSuccess, onError) => {
@@ -9,8 +9,8 @@ const getData = (onSuccess, onError) => {
       }
       throw new Error('Не удалось загрузить объявления. Попробуйте еще раз');
     })
-    .then((offers) => {
-      onSuccess(offers);
+    .then((ads) => {
+      onSuccess(ads);
     })
     .catch(onError);
 };
@@ -27,10 +27,11 @@ const setData = (onSuccess, onError, body) => {
       }
       throw new Error('Не удалось отправить форму. Попробуйте еще раз');
     })
-    .then((offers) => {
-      onSuccess(offers);
+    .then((ads) => {
+      onSuccess(ads);
     })
     .catch(onError);
 };
+
 
 export {getData,setData};
