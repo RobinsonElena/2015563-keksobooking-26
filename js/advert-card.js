@@ -10,12 +10,13 @@ const cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-const createRentOfferCard = (author, offer) => {
-
+const createRentOfferCard = (advert) => {
+  const {author, offer} = advert;
   const cardElement = cardTemplate.cloneNode(true);
   const photoList = cardElement.querySelector('.popup__photos');
   const photoTemplate = cardElement.querySelector('.popup__photo');
   const descriptionElement = cardElement.querySelector('.popup__description');
+  const featureContainer = cardElement.querySelector('.popup__features');
   const featureList = cardElement.querySelectorAll('.popup__feature');
 
   cardElement.querySelector('.popup__avatar').src = author.avatar;
@@ -43,12 +44,12 @@ const createRentOfferCard = (author, offer) => {
     descriptionElement.remove();
   }
 
-  if (offer.features && offer.photos.length > 0) {
+  if (offer.features && offer.features.length > 0) {
     featureList.forEach((featureElement) => {
       offer.features.some((feature) => featureElement.classList.contains(`popup__feature--${feature}`));
     });
   } else {
-    featureList.remove();
+    featureContainer.remove();
   }
 
   return cardElement;

@@ -1,4 +1,5 @@
-import {toggleElements} from './util.js';
+import {toggleElements, onSuccessMessage, onErrorMessage} from './util.js';
+import {sendData} from './api.js';
 
 const MIN_PRICE = {
   bungalow: '0',
@@ -28,6 +29,7 @@ const capacityAmount = formElement.querySelector('#capacity');
 const timeElement = document.querySelector('.ad-form__element--time');
 const timeList = timeElement.querySelectorAll('select');
 const sliderElement = document.querySelector('.ad-form__slider');
+const submitElement = document.querySelector('.ad-form__submit');
 
 const deactivatePage = () => {
   filterElement.classList.add('map__filters--disabled');
@@ -69,6 +71,12 @@ const onTypeHousingChange = () => {
   priceHousing.min = MIN_PRICE[typeHousing.value];
 };
 
+const submitButton = (value) => {
+  submitElement.disabled = value;
+};
+
+const getFormData = () => new FormData(submitElement);
+
 const initValidation = () => {
   const pristine = new Pristine(formElement, {
     classTo: 'ad-form__element',
@@ -84,9 +92,25 @@ const initValidation = () => {
   typeHousing.addEventListener('change', onTypeHousingChange);
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    pristine.validate();
+    const isValid = pristine.validate();
+    if (isValid) {
+      submitButton(true);
+      sendData(
+        () => {
+          onSuccessMessage();
+          submitButton(false);
+          formElement.reset();
+        },
+        () => {
+          onErrorMessage();
+          submitButton(true);
+        },
+        getFormData(),
+      );
+    }
   });
 };
+
 
 const createSlider = () => {
   noUiSlider.create(sliderElement, {
@@ -112,4 +136,4 @@ const createSlider = () => {
   });
 };
 
-export {deactivatePage, activateFilters, activateForm, initValidation, createSlider};
+export {deactivatePage, activateFilters, activateForm, initValidation, createSlider, getFormData};

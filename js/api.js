@@ -1,22 +1,28 @@
-const GET_URL = 'https://26.javascript.pages.academy/keksobooking/data';
-const SET_URL = 'https://26.javascript.pages.academy/keksobooking';
+import {showAlert} from './util.js';
 
-const getData = (onSuccess, onError) => {
-  fetch(GET_URL)
+const API_URL = 'https://26.javascript.pages.academy/keksobooking';
+
+const ERROR_GET_DATA = 'Не удалось загрузить объявления. Попробуйте еще раз';
+const ERROR_SEND_DATA = 'Не удалось отправить форму. Попробуйте еще раз';
+
+const getData = (onSuccess) => {
+  fetch(`${API_URL}/data`)
     .then((response) => {
       if (response.ok) {
         return response.json();
       }
-      throw new Error('Не удалось загрузить объявления. Попробуйте еще раз');
+      showAlert(ERROR_GET_DATA);
     })
     .then((ads) => {
       onSuccess(ads);
     })
-    .catch(onError);
+    .catch(() => {
+      showAlert(ERROR_GET_DATA);
+    });
 };
 
-const setData = (onSuccess, onError, body) => {
-  fetch(SET_URL,
+const sendData = (onSuccess, onError, body) => {
+  fetch(API_URL,
     {
       metod: 'POST',
       body,
@@ -25,13 +31,14 @@ const setData = (onSuccess, onError, body) => {
       if (response.ok) {
         return response.json();
       }
-      throw new Error('Не удалось отправить форму. Попробуйте еще раз');
+      showAlert(ERROR_SEND_DATA);
     })
     .then((ads) => {
       onSuccess(ads);
     })
-    .catch(onError);
+    .catch(() => {
+      showAlert(ERROR_SEND_DATA);
+    });
 };
 
-
-export {getData,setData};
+export {getData,sendData};
