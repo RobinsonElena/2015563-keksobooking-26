@@ -1,6 +1,6 @@
-import {createRentOffers} from './data.js';
 import {createRentOfferCard} from './advert-card.js';
-import {activateForm} from './advert-form.js';
+import {activateForm, activateFilters} from './advert-form.js';
+import {getData} from './api.js';
 
 const lat = 35.70292;
 const lng = 139.68531;
@@ -30,13 +30,13 @@ addressField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
 const mainPinIcon = L.icon({
   iconUrl: mainPin.iconUrl,
-  iconSize: mainPin.iconSize,
+  iconSize: [mainPin.iconSize.width, mainPin.iconSize.height],
   iconAnchor: [mainPin.iconSize.width / 2, mainPin.iconSize.height],
 });
 
 const adPinIcon = L.icon({
   iconUrl: adPin.iconUrl,
-  iconSize: adPin.iconSize,
+  iconSize: [adPin.iconSize.width, adPin.iconSize.height],
   iconAnchor: [adPin.iconSize.width / 2, adPin.iconSize.height],
 });
 
@@ -54,27 +54,40 @@ const mainPinMarker = L.marker(
   },
 );
 
-const rentRentOffersCards = createRentOffers();
-
-const renderMarkers = (author, offer, location) => {
-  const adMarker = L.marker(
-    {
-      lat: location.lat,
-      lng: location.lng,
-    },
-    {
-      icon: adPinIcon,
-    },
-  );
-
-  adMarker
-    .addTo(markerGroup)
-    .bindPopup(createRentOfferCard(author, offer));
+const onPinMove = (evt) => {
+  const coords = evt.target.getLatLng();
+  addressField.value = `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`;
 };
 
-const initMap = () => {
+const renderMarkers = (offers) => {  //добавление маркеров на карту
+  offers.forEach((offer) => {
+    const {location} = offer;
+    const adMarker = L.marker(
+      {
+        lat: location.lat,
+        lng: location.lng,
+      },
+      {
+        icon: adPinIcon,
+      },
+    );
+
+    adMarker
+      .addTo(markerGroup)
+      .bindPopup(createRentOfferCard(offer));
+
+  });
+};
+
+const onLoadSuccess = (offers) => {
+  renderMarkers(offers.slice(0, 10));
+  activateFilters();
+};
+
+const initMap = () => { //инициализация карты, создание и добавление маркеров
   map.on('load', () => {
     activateForm(true);
+    getData(onLoadSuccess);
   })
     .setView({
       lat,
@@ -83,13 +96,8 @@ const initMap = () => {
 
   L.tileLayer(layer, attribution).addTo(map);
 
-  mainPinMarker.addTo(map);
-
-  rentRentOffersCards.forEach(({author, offer, location}) => renderMarkers(author, offer, location));
-
-  mainPinMarker.on('move', (evt) => {
-    addressField.value = `${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`;
-  });
+  mainPinMarker.addTo(map); //добавление маркера
+  mainPinMarker.on('move', onPinMove);
 };
 
-export {initMap};
+export {initMap, addressField};

@@ -1,4 +1,6 @@
 import {toggleElements} from './util.js';
+import {showSuccessMessage, showErrorMessage} from './popup.js';
+import {sendData} from './api.js';
 
 const MIN_PRICE = {
   bungalow: '0',
@@ -28,6 +30,7 @@ const capacityAmount = formElement.querySelector('#capacity');
 const timeElement = document.querySelector('.ad-form__element--time');
 const timeList = timeElement.querySelectorAll('select');
 const sliderElement = document.querySelector('.ad-form__slider');
+const submitElement = document.querySelector('.ad-form__submit');
 
 const deactivatePage = () => {
   filterElement.classList.add('map__filters--disabled');
@@ -49,11 +52,11 @@ const activateForm = () => {
 const validatePrice = (value) => parseInt(value, 10) >= MIN_PRICE[typeHousing.value];
 const getMinPriceMessage = () => `Минимальная цена ${MIN_PRICE[typeHousing.value]}`;
 
-const validateCapacity = () => {CAPACITY_OPTIONS[roomAmount.value].includes(capacityAmount.value);};
+const validateCapacity = () => CAPACITY_OPTIONS[roomAmount.value].includes(+capacityAmount.value);
 const getCapacityMessage = () => {
-  if (+(roomAmount.value) === 100) {
+  if (+roomAmount.value === 100) {
     return 'Комнаты не для гостей';
-  } else if (+(capacityAmount.value) > +(roomAmount.value)) {
+  } else if (+capacityAmount.value > +roomAmount.value) {
     return 'Гостей не больше, чем комнат';
   }
 };
@@ -69,6 +72,21 @@ const onTypeHousingChange = () => {
   priceHousing.min = MIN_PRICE[typeHousing.value];
 };
 
+const setSubmitButtonState = (value) => {
+  submitElement.disabled = value;
+};
+
+const onSendSuccess = () => {
+  showSuccessMessage();
+  setSubmitButtonState(false);
+  formElement.reset();
+};
+
+const onSendFailure = () => {
+  showErrorMessage();
+  setSubmitButtonState(false);
+};
+
 const initValidation = () => {
   const pristine = new Pristine(formElement, {
     classTo: 'ad-form__element',
@@ -82,9 +100,15 @@ const initValidation = () => {
 
   timeElement.addEventListener('change', onTimeChange);
   typeHousing.addEventListener('change', onTypeHousingChange);
+
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    pristine.validate();
+    const isValid = pristine.validate();
+
+    if (isValid) {
+      setSubmitButtonState(true);
+      sendData(onSendSuccess, onSendFailure, new FormData(evt.target));
+    }
   });
 };
 
@@ -94,7 +118,7 @@ const createSlider = () => {
       min: 0,
       max: MAX_PRICE,
     },
-    start: 0,
+    start: MIN_PRICE[typeHousing.value],
     step: 1,
     connect: 'lower',
     format: {
