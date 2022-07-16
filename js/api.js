@@ -1,4 +1,4 @@
-import {showAlert} from './util.js';
+import {showAlert} from './popup.js';
 
 const API_URL = 'https://26.javascript.pages.academy/keksobooking';
 

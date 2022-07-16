@@ -1,4 +1,5 @@
-import {toggleElements, showSuccessMessage, showErrorMessage} from './util.js';
+import {toggleElements} from './util.js';
+import {showSuccessMessage, showErrorMessage} from './popup.js';
 import {sendData} from './api.js';
 
 const MIN_PRICE = {
