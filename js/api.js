@@ -21,23 +21,21 @@ const getData = (onSuccess) => {
     });
 };
 
-const sendData = (onSuccess, onError, body) => {
+const sendData = (onSuccess, onFail, body) => {
   fetch(API_URL,
     {
-      metod: 'POST',
+      method: 'POST',
       body,
     })
     .then((response) => {
       if (response.ok) {
-        return response.json();
+        onSuccess();
+      } else {
+        onFail(ERROR_SEND_DATA);
       }
-      showAlert(ERROR_SEND_DATA);
-    })
-    .then((ads) => {
-      onSuccess(ads);
     })
     .catch(() => {
-      showAlert(ERROR_SEND_DATA);
+      onFail(ERROR_SEND_DATA);
     });
 };
 

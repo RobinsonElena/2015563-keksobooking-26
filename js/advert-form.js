@@ -1,4 +1,4 @@
-import {toggleElements, onSuccessMessage, onErrorMessage} from './util.js';
+import {toggleElements, showSuccessMessage, showErrorMessage} from './util.js';
 import {sendData} from './api.js';
 
 const MIN_PRICE = {
@@ -51,11 +51,11 @@ const activateForm = () => {
 const validatePrice = (value) => parseInt(value, 10) >= MIN_PRICE[typeHousing.value];
 const getMinPriceMessage = () => `Минимальная цена ${MIN_PRICE[typeHousing.value]}`;
 
-const validateCapacity = () => {CAPACITY_OPTIONS[roomAmount.value].includes(capacityAmount.value);};
+const validateCapacity = () => CAPACITY_OPTIONS[roomAmount.value].includes(+capacityAmount.value);
 const getCapacityMessage = () => {
-  if (+(roomAmount.value) === 100) {
+  if (+roomAmount.value === 100) {
     return 'Комнаты не для гостей';
-  } else if (+(capacityAmount.value) > +(roomAmount.value)) {
+  } else if (+capacityAmount.value > +roomAmount.value) {
     return 'Гостей не больше, чем комнат';
   }
 };
@@ -71,11 +71,20 @@ const onTypeHousingChange = () => {
   priceHousing.min = MIN_PRICE[typeHousing.value];
 };
 
-const submitButton = (value) => {
+const setSubmitButtonState = (value) => {
   submitElement.disabled = value;
 };
 
-const getFormData = () => new FormData(submitElement);
+const onSendSuccess = () => {
+  showSuccessMessage();
+  setSubmitButtonState(false);
+  formElement.reset();
+};
+
+const onSendFailure = () => {
+  showErrorMessage();
+  setSubmitButtonState(false);
+};
 
 const initValidation = () => {
   const pristine = new Pristine(formElement, {
@@ -90,27 +99,17 @@ const initValidation = () => {
 
   timeElement.addEventListener('change', onTimeChange);
   typeHousing.addEventListener('change', onTypeHousingChange);
+
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
+
     if (isValid) {
-      submitButton(true);
-      sendData(
-        () => {
-          onSuccessMessage();
-          submitButton(false);
-          formElement.reset();
-        },
-        () => {
-          onErrorMessage();
-          submitButton(true);
-        },
-        getFormData(),
-      );
+      setSubmitButtonState(true);
+      sendData(onSendSuccess, onSendFailure, new FormData(evt.target));
     }
   });
 };
-
 
 const createSlider = () => {
   noUiSlider.create(sliderElement, {
@@ -118,7 +117,7 @@ const createSlider = () => {
       min: 0,
       max: MAX_PRICE,
     },
-    start: 0,
+    start: MIN_PRICE[typeHousing.value],
     step: 1,
     connect: 'lower',
     format: {
@@ -136,4 +135,4 @@ const createSlider = () => {
   });
 };
 
-export {deactivatePage, activateFilters, activateForm, initValidation, createSlider, getFormData};
+export {deactivatePage, activateFilters, activateForm, initValidation, createSlider};

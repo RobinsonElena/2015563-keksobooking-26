@@ -100,4 +100,4 @@ const initMap = () => { //инициализация карты, создани�
   mainPinMarker.on('move', onPinMove);
 };
 
-export {initMap};
+export {initMap, addressField};

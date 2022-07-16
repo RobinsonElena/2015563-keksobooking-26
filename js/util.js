@@ -27,40 +27,47 @@ const showAlert = (message) => {
 const successMessage = adSuccess.cloneNode(true);
 const errorMessage = adError.cloneNode(true);
 
-const isEscapeKey = (evt) => evt.key ==='Escape';
-
-const onSuccessMessage = () => {
-  document.body.append(successMessage);
-
-  function closeMessage () {
-    successMessage.remove();
-    document.removeEventListener('click', onSuccessEsc);
-  }
-
-  function onSuccessEsc (evt) {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      closeMessage();
-    }
-  }
-  document.addEventListener('click', closeMessage);
+const closeMessage = (element) => {
+  element.remove();
 };
 
-const onErrorMessage = () => {
-  document.body.append(errorMessage);
+const isEscapeKey = (evt) => evt.key ==='Escape';
 
-  function closeMessage () {
-    errorMessage.remove();
-    document.removeEventListener('click', onSuccessEsc);
+const showSuccessMessage = () => {
+  document.body.append(successMessage);
+
+  function closeSuccessMessage () {
+    closeMessage(successMessage);
+    document.removeEventListener('click', closeSuccessMessage);
   }
 
   function onSuccessEsc (evt) {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      closeMessage();
+      closeSuccessMessage();
     }
   }
-  document.addEventListener('click', closeMessage);
+  document.addEventListener('keydown', onSuccessEsc);
+  document.addEventListener('click', closeSuccessMessage);
+};
+
+const showErrorMessage = () => {
+  document.body.append(errorMessage);
+
+  function closeErrorMessage () {
+    closeMessage(errorMessage);
+    document.removeEventListener('click', closeErrorMessage);
+  }
+
+  function onErrorEsc (evt) {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      closeErrorMessage();
+    }
+  }
+
+  document.addEventListener('keydown', onErrorEsc);
+  document.addEventListener('click', closeErrorMessage);
 };
 
 const getRandomPositiveInteger = (a, b) => {
@@ -104,6 +111,6 @@ export {
   getShuffledArray,
   toggleElements,
   showAlert,
-  onSuccessMessage,
-  onErrorMessage,
+  showSuccessMessage,
+  showErrorMessage,
 };
