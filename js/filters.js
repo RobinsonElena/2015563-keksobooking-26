@@ -1,3 +1,5 @@
+import {debounce} from './util.js';
+
 const DEFAULT_VALUE = 'any';
 const PRICE_LEVEL = {
   any: {
@@ -44,7 +46,12 @@ const isfeauteresFilter = (offer, feauteres) => {
   });
 };
 
-const filterOffers = (offers) =>
+const filterOffers = (offers) => {
   offers.filter((offer) => isTypeFilter(offer) && isRoomsFilter(offer) && isGuestsFilter(offer) && isPriceFilter(offer) && isfeauteresFilter(offer));
+  formFilterElement.addEventListener(
+    'change',
+    debounce(filterOffers(offers))
+  );
+};
 
 export {filterOffers};
