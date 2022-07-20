@@ -1,6 +1,8 @@
 import {createRentOfferCard} from './advert-card.js';
 import {activateForm, activateFilters} from './advert-form.js';
 import {getData} from './api.js';
+import {filterOffers} from './filters.js';
+import {debounce} from './util.js';
 
 const lat = 35.70292;
 const lng = 139.68531;
@@ -80,8 +82,19 @@ const renderMarkers = (offers) => {  //добавление маркеров н�
 };
 
 const onLoadSuccess = (offers) => {
-  renderMarkers(offers.slice(0, 10));
   activateFilters();
+
+  const formFilterElement = document.querySelector('.map__filters');
+  formFilterElement.addEventListener(
+    'change',
+    debounce(() => {
+      markerGroup.clearLayers();
+      const filterArray = filterOffers(offers);
+      filterArray.slice(0, 10).forEach((offer) => {
+        renderMarkers(offer);
+      });
+    })
+  );
 };
 
 const initMap = () => { //инициализация карты, создание и добавление маркеров

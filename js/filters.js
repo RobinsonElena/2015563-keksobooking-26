@@ -1,4 +1,4 @@
-import {debounce} from './util.js';
+//import {debounce} from './util.js';
 
 const DEFAULT_VALUE = 'any';
 const PRICE_LEVEL = {
@@ -36,7 +36,7 @@ const isPriceFilter = (offer) =>
   offer.price < PRICE_LEVEL[priceFilterElement.value].max;
 
 const isfeauteresFilter = (offer, feauteres) => {
-  feauteres.every((feautere) => offer.offer.feauteres.includes(feautere));
+  feauteres.every((feautere) => offer.feauteres.includes(feautere));
 
   const filterFeatures = [];
   featuresFilterElement.forEach((checkbox) => {
@@ -48,10 +48,6 @@ const isfeauteresFilter = (offer, feauteres) => {
 
 const filterOffers = (offers) => {
   offers.filter((offer) => isTypeFilter(offer) && isRoomsFilter(offer) && isGuestsFilter(offer) && isPriceFilter(offer) && isfeauteresFilter(offer));
-  formFilterElement.addEventListener(
-    'change',
-    debounce(filterOffers(offers))
-  );
 };
 
 export {filterOffers};
