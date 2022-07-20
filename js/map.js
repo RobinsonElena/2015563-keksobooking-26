@@ -82,6 +82,7 @@ const renderMarkers = (offers) => {  //добавление маркеров н�
 };
 
 const onLoadSuccess = (offers) => {
+  renderMarkers(offers.slice(0, 10));
   activateFilters();
 
   const formFilterElement = document.querySelector('.map__filters');
@@ -111,6 +112,16 @@ const initMap = () => { //инициализация карты, создани�
 
   mainPinMarker.addTo(map); //добавление маркера
   mainPinMarker.on('move', onPinMove);
+
+  const resetMarker = () => {
+    mainPinMarker.setLatLng(
+      {
+        lat,
+        lng,
+      }
+    );
+  };
+  return resetMarker;
 };
 
 export {initMap, addressField};
