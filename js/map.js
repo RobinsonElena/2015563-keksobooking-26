@@ -2,6 +2,7 @@ import {createRentOfferCard} from './advert-card.js';
 import {activateForm, activateFilters} from './advert-form.js';
 import {getData} from './api.js';
 import {setFilterListener} from './filters.js';
+import {uploadFile} from './photos.js';
 
 const MAX_OFFERS = 10;
 const LAT = 35.70292;
@@ -107,7 +108,9 @@ resetButton.addEventListener('click', () => {
   map.setView({
     lat: LAT,
     lng: LNG,
-  });
+  }, SCALE);
+  addressField.value = DEFAULT_ADDRES;
+  uploadFile();
 });
 
 const onLoadSuccess = (offers) => {
@@ -132,4 +135,4 @@ const initMap = () => { //инициализация карты, создани�
   mainPinMarker.on('move', onPinMove);
 };
 
-export {initMap, clearMarkers, renderMarkers, resetMap};  //resetMap может и не нужен здесь
+export {initMap, clearMarkers, renderMarkers, resetMap};

@@ -1,6 +1,6 @@
 const FILE_TYPES = ['jpg', 'jpeg', 'png', 'bmp', 'gif'];
 
-//const DEFAULT_AVATAR = 'img/muffin-grey.svg';
+const DEFAULT_AVATAR = 'img/muffin-grey.svg';
 
 const avatarChooserElement = document.querySelector('.ad-form__field [type="file"]');
 const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
@@ -20,10 +20,34 @@ avatarChooserElement.addEventListener('change', () => {
   }
 });
 
+const createPreviewImage = (file) => {
+  const previewImageElement = document.createElement('img');
+  previewImageElement.src = URL.createObjectURL(file);
+  previewImageElement.alt = 'Фотография жилья';
+  previewImageElement.style.width = '100%';
+  previewImageElement.style.height = '70';
+  photoPreviewElement.append(previewImageElement);
+};
+
+
+const removePreviewImage = () => {
+  if (photoPreviewElement.children.length > 0) {
+    photoPreviewElement.children[0].remove();
+  }
+};
+
 photoChooserElement.addEventListener('change', () => {
+  removePreviewImage();
   const file = photoChooserElement.files[0];
 
   if (isFile(file)) {
-    photoPreviewElement.src = URL.createObjectURL(file);
+    createPreviewImage(file);
   }
 });
+
+const uploadFile = () => {
+  photoPreviewElement.innerHTML = '';
+  avatarPreviewElement.src = DEFAULT_AVATAR;
+};
+
+export {uploadFile};

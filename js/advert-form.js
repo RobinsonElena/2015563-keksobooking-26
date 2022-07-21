@@ -1,7 +1,7 @@
 import {toggleElements} from './util.js';
 import {showSuccessMessage, showErrorMessage} from './popup.js';
 import {sendData} from './api.js';
-import {resetMap} from './map.js';
+import {uploadFile} from './photos.js';
 
 const MIN_PRICE = {
   bungalow: '0',
@@ -79,9 +79,8 @@ const setSubmitButtonState = (value) => {
 
 const onSendSuccess = () => {
   showSuccessMessage();
-  setSubmitButtonState(false);
   formElement.reset();
-  resetMap();
+  setSubmitButtonState(false);
 };
 
 const onSendFailure = () => {
@@ -112,6 +111,8 @@ const initValidation = () => {
       sendData(onSendSuccess, onSendFailure, new FormData(evt.target));
     }
   });
+
+  uploadFile();
 };
 
 const createSlider = () => {
