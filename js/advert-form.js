@@ -1,6 +1,7 @@
 import {toggleElements} from './util.js';
 import {showSuccessMessage, showErrorMessage} from './popup.js';
 import {sendData} from './api.js';
+import {resetMap} from './map.js';
 
 const MIN_PRICE = {
   bungalow: '0',
@@ -80,6 +81,7 @@ const onSendSuccess = () => {
   showSuccessMessage();
   setSubmitButtonState(false);
   formElement.reset();
+  resetMap();
 };
 
 const onSendFailure = () => {

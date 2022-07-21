@@ -1,14 +1,16 @@
 import {createRentOfferCard} from './advert-card.js';
 import {activateForm, activateFilters} from './advert-form.js';
 import {getData} from './api.js';
-import {filterOffers} from './filters.js';
-import {debounce} from './util.js';
+import {setFilterListener} from './filters.js';
 
-const lat = 35.70292;
-const lng = 139.68531;
-const scale = 12;
+const MAX_OFFERS = 10;
+const LAT = 35.70292;
+const LNG = 139.68531;
+const SCALE = 12;
+const LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-const mainPin = {
+const MAIN_PIN = {
   iconUrl: './img/main-pin.svg',
   iconSize: {
     width: 52,
@@ -16,7 +18,7 @@ const mainPin = {
   },
 };
 
-const adPin = {
+const AD_PIN = {
   iconUrl: './img/pin.svg',
   iconSize: {
     width: 40,
@@ -24,37 +26,36 @@ const adPin = {
   },
 };
 
-const layer = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-
-const addressField = document.querySelector('#address');
-addressField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+const DEFAULT_ADDRES = `${LAT}, ${LNG}`;
 
 const mainPinIcon = L.icon({
-  iconUrl: mainPin.iconUrl,
-  iconSize: [mainPin.iconSize.width, mainPin.iconSize.height],
-  iconAnchor: [mainPin.iconSize.width / 2, mainPin.iconSize.height],
+  iconUrl: MAIN_PIN.iconUrl,
+  iconSize: [MAIN_PIN.iconSize.width, MAIN_PIN.iconSize.height],
+  iconAnchor: [MAIN_PIN.iconSize.width / 2, MAIN_PIN.iconSize.height],
 });
 
 const adPinIcon = L.icon({
-  iconUrl: adPin.iconUrl,
-  iconSize: [adPin.iconSize.width, adPin.iconSize.height],
-  iconAnchor: [adPin.iconSize.width / 2, adPin.iconSize.height],
+  iconUrl: AD_PIN.iconUrl,
+  iconSize: [AD_PIN.iconSize.width, AD_PIN.iconSize.height],
+  iconAnchor: [AD_PIN.iconSize.width / 2, AD_PIN.iconSize.height],
 });
-
-const map = L.map('map-canvas');
-const markerGroup = L.layerGroup().addTo(map);
 
 const mainPinMarker = L.marker(
   {
-    lat,
-    lng,
+    lat: LAT,
+    lng: LNG,
   },
   {
     draggable: true,
     icon: mainPinIcon,
   },
 );
+
+const map = L.map('map-canvas');
+const addressField = document.querySelector('#address');
+const resetButton = document.querySelector('.ad-form__reset');
+
+const markerGroup = L.layerGroup().addTo(map);
 
 const onPinMove = (evt) => {
   const coords = evt.target.getLatLng();
@@ -77,25 +78,42 @@ const renderMarkers = (offers) => {  //добавление маркеров н�
     adMarker
       .addTo(markerGroup)
       .bindPopup(createRentOfferCard(offer));
-
   });
 };
 
-const onLoadSuccess = (offers) => {
-  renderMarkers(offers.slice(0, 10));
-  activateFilters();
+const clearMarkers = () => {
+  markerGroup.clearLayers();
+};
 
-  const formFilterElement = document.querySelector('.map__filters');
-  formFilterElement.addEventListener(
-    'change',
-    debounce(() => {
-      markerGroup.clearLayers();
-      const filterArray = filterOffers(offers);
-      filterArray.slice(0, 10).forEach((offer) => {
-        renderMarkers(offer);
-      });
-    })
+const resetMap = () => {
+  mainPinMarker.setLatLng(
+    {
+      lat: LAT,
+      lng: LNG,
+    }
   );
+  map.setView({
+    lat: LAT,
+    lng: LNG,
+  }, SCALE);
+  addressField.value = DEFAULT_ADDRES;
+};
+
+resetButton.addEventListener('click', () => {
+  mainPinMarker.setLatLng({
+    lat: LAT,
+    lng: LNG,
+  });
+  map.setView({
+    lat: LAT,
+    lng: LNG,
+  });
+});
+
+const onLoadSuccess = (offers) => {
+  renderMarkers(offers.slice(0, MAX_OFFERS));
+  activateFilters();
+  setFilterListener(offers);
 };
 
 const initMap = () => { //инициализация карты, создание и добавление маркеров
@@ -104,24 +122,14 @@ const initMap = () => { //инициализация карты, создани�
     getData(onLoadSuccess);
   })
     .setView({
-      lat,
-      lng,
-    }, scale);
+      lat: LAT,
+      lng: LNG,
+    }, SCALE);
 
-  L.tileLayer(layer, attribution).addTo(map);
+  L.tileLayer(LAYER, ATTRIBUTION).addTo(map);
 
   mainPinMarker.addTo(map); //добавление маркера
   mainPinMarker.on('move', onPinMove);
-
-  const resetMarker = () => {
-    mainPinMarker.setLatLng(
-      {
-        lat,
-        lng,
-      }
-    );
-  };
-  return resetMarker;
 };
 
-export {initMap, addressField};
+export {initMap, clearMarkers, renderMarkers, resetMap};  //resetMap может и не нужен здесь

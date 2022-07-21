@@ -1,6 +1,8 @@
-//import {debounce} from './util.js';
+import {debounce} from './util.js';
+import {clearMarkers, renderMarkers, resetMap} from './map.js';
 
 const DEFAULT_VALUE = 'any';
+const OFFERS_COUNT = 10;
 const PRICE_LEVEL = {
   any: {
     min: 0,
@@ -25,29 +27,55 @@ const typeFilterElement = formFilterElement.querySelector('#housing-type');
 const priceFilterElement = formFilterElement.querySelector('#housing-price');
 const roomsFilterElement = formFilterElement.querySelector('#housing-rooms');
 const guestsFilterElement = formFilterElement.querySelector('#housing-guests');
-const featuresFilterElement = formFilterElement.querySelectorAll('#housing-features [type="checkbox"]');
+const featuresFilterElement = formFilterElement.querySelectorAll('.map__checkbox');
 
-const isTypeFilter = (offer) => (typeFilterElement.value === DEFAULT_VALUE || offer.type === typeFilterElement.value);
-const isRoomsFilter = (offer) => (roomsFilterElement.value === DEFAULT_VALUE || offer.rooms === +roomsFilterElement.value);
-const isGuestsFilter = (offer) => (guestsFilterElement.value === DEFAULT_VALUE || offer.guests === +guestsFilterElement.value);
+const filterByType = (offer) => typeFilterElement.value === DEFAULT_VALUE || offer.offer.type === typeFilterElement.value;
+const filterByRooms = (offer) => roomsFilterElement.value === DEFAULT_VALUE || offer.offer.rooms === +roomsFilterElement.value;
+const filterByGuests = (offer) => guestsFilterElement.value === DEFAULT_VALUE || offer.offer.guests === +guestsFilterElement.value;
 
-const isPriceFilter = (offer) =>
-  offer.price >= PRICE_LEVEL[priceFilterElement.value].min &&
-  offer.price < PRICE_LEVEL[priceFilterElement.value].max;
+const filterByPrice = (offer) =>
+  offer.offer.price >= PRICE_LEVEL[priceFilterElement.value].min &&
+  offer.offer.price < PRICE_LEVEL[priceFilterElement.value].max;
 
-const isfeauteresFilter = (offer, feauteres) => {
-  feauteres.every((feautere) => offer.feauteres.includes(feautere));
-
-  const filterFeatures = [];
-  featuresFilterElement.forEach((checkbox) => {
-    if (checkbox.checked) {
-      filterFeatures.push(checkbox.value);
-    }
-  });
-};
+const filterByFeatures = (offer) => Array.from(featuresFilterElement).every((filterFeature) => {
+  if (!filterFeature.checked) {
+    return true;
+  }
+  if (!offer.offer.features) {
+    return false;
+  }
+  return offer.offer.features.includes(filterFeature.value);
+});
 
 const filterOffers = (offers) => {
-  offers.filter((offer) => isTypeFilter(offer) && isRoomsFilter(offer) && isGuestsFilter(offer) && isPriceFilter(offer) && isfeauteresFilter(offer));
+  const filteredOffers = [];
+
+  for (const offer of offers) {
+    if (filteredOffers.length >= OFFERS_COUNT) {
+      break;
+    }
+    if (
+      filterByType(offer) &&
+      filterByRooms(offer) &&
+      filterByPrice(offer) &&
+      filterByGuests(offer) &&
+      filterByFeatures(offer)
+    ) {
+      filteredOffers.push(offer);
+    }
+  }
+  return filteredOffers;
 };
 
-export {filterOffers};
+const onFilterChange = (data) => {
+  clearMarkers();
+  resetMap();
+  const filteredMarkers = filterOffers(data);
+  renderMarkers(filteredMarkers);
+};
+
+const setFilterListener = (data) => {
+  formFilterElement.addEventListener('change', debounce(() => onFilterChange(data)));
+};
+
+export {setFilterListener};
