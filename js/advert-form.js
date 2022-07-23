@@ -2,7 +2,7 @@ import {toggleElements} from './util.js';
 import {showSuccessMessage, showErrorMessage} from './popup.js';
 import {sendData} from './api.js';
 import {resetPreviewFile} from './photos.js';
-import { resetMap } from './map.js';
+import {resetMap} from './map.js';
 
 const MIN_PRICE = {
   bungalow: '0',
@@ -111,6 +111,7 @@ const initValidation = () => {
   resetButton.addEventListener('click', () => {
     filterElement.reset();
     resetMap();
+    resetPreviewFile();
   });
 
   formElement.addEventListener('submit', (evt) => {
