@@ -2,52 +2,52 @@ const FILE_TYPES = ['jpg', 'jpeg', 'png', 'bmp', 'gif'];
 
 const DEFAULT_AVATAR = 'img/muffin-grey.svg';
 
-const avatarChooserElement = document.querySelector('.ad-form__field [type="file"]');
-const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
-const photoChooserElement = document.querySelector('.ad-form__upload [type="file"]');
-const photoPreviewElement = document.querySelector('.ad-form__photo');
+const avatarChooser = document.querySelector('.ad-form__field [type="file"]');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const photoChooser = document.querySelector('.ad-form__upload [type="file"]');
+const photoPreview = document.querySelector('.ad-form__photo');
 
-const isFile = (file) => {
+const checkFileName = (file) => {
   const fileName = file.name.toLowerCase();
   return FILE_TYPES.some((it) => fileName.endsWith(it));
 };
 
-avatarChooserElement.addEventListener('change', () => {
-  const file = avatarChooserElement.files[0];
+avatarChooser.addEventListener('change', () => {
+  const file = avatarChooser.files[0];
 
-  if (isFile(file)) {
-    avatarPreviewElement.src = URL.createObjectURL(file);
+  if (checkFileName(file)) {
+    avatarPreview.src = URL.createObjectURL(file);
   }
 });
 
 const createPreviewImage = (file) => {
-  const previewImageElement = document.createElement('img');
-  previewImageElement.src = URL.createObjectURL(file);
-  previewImageElement.alt = 'Фотография жилья';
-  previewImageElement.style.width = '100%';
-  previewImageElement.style.height = '70';
-  photoPreviewElement.append(previewImageElement);
+  const previewImage = document.createElement('img');
+  previewImage.src = URL.createObjectURL(file);
+  previewImage.alt = 'Фотография жилья';
+  previewImage.style.width = '100%';
+  previewImage.style.height = '70';
+  photoPreview.append(previewImage);
 };
 
 
 const removePreviewImage = () => {
-  if (photoPreviewElement.children.length > 0) {
-    photoPreviewElement.children[0].remove();
+  if (photoPreview.children.length > 0) {
+    photoPreview.children[0].remove();
   }
 };
 
-photoChooserElement.addEventListener('change', () => {
+photoChooser.addEventListener('change', () => {
   removePreviewImage();
-  const file = photoChooserElement.files[0];
+  const file = photoChooser.files[0];
 
-  if (isFile(file)) {
+  if (checkFileName(file)) {
     createPreviewImage(file);
   }
 });
 
 const resetPreviewFile = () => {
-  photoPreviewElement.innerHTML = '';
-  avatarPreviewElement.src = DEFAULT_AVATAR;
+  photoPreview.innerHTML = '';
+  avatarPreview.src = DEFAULT_AVATAR;
 };
 
 export {resetPreviewFile};

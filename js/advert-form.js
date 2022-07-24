@@ -13,6 +13,7 @@ const MIN_PRICE = {
 };
 
 const MAX_PRICE = 100000;
+const ROOM_AMOUNT = 100000;
 
 const CAPACITY_OPTIONS = {
   1: [1],
@@ -21,35 +22,35 @@ const CAPACITY_OPTIONS = {
   100: [0],
 };
 
-const filterElement = document.querySelector('.map__filters');
-const filterList = filterElement.querySelectorAll('.map__filters select, .map__filters fieldset');
-const formElement = document.querySelector('.ad-form');
-const formList = formElement.querySelectorAll('.ad-form fieldset');
-const typeHousing = formElement.querySelector('#type');
-const priceHousing = formElement.querySelector('#price');
-const roomAmount = formElement.querySelector('#room_number');
-const capacityAmount = formElement.querySelector('#capacity');
+const filterMap = document.querySelector('.map__filters');
+const filterList = filterMap.querySelectorAll('.map__filters select, .map__filters fieldset');
+const form = document.querySelector('.ad-form');
+const formList = form.querySelectorAll('.ad-form fieldset');
+const typeHousing = form.querySelector('#type');
+const priceHousing = form.querySelector('#price');
+const roomAmount = form.querySelector('#room_number');
+const capacityAmount = form.querySelector('#capacity');
 const timeElement = document.querySelector('.ad-form__element--time');
 const timeList = timeElement.querySelectorAll('select');
-const sliderElement = document.querySelector('.ad-form__slider');
-const submitElement = document.querySelector('.ad-form__submit');
+const slider = document.querySelector('.ad-form__slider');
+const submitButton = document.querySelector('.ad-form__submit');
 const resetButton = document.querySelector('.ad-form__reset');
 
 
 const deactivatePage = () => {
-  filterElement.classList.add('map__filters--disabled');
+  filterMap.classList.add('map__filters--disabled');
   toggleElements(filterList, true);
-  formElement.classList.add('ad-form--disabled');
+  form.classList.add('ad-form--disabled');
   toggleElements(formList, true);
 };
 
 const activateFilters = () => {
-  filterElement.classList.remove('map__filters--disabled');
+  filterMap.classList.remove('map__filters--disabled');
   toggleElements(filterList, false);
 };
 
 const activateForm = () => {
-  formElement.classList.remove('ad-form--disabled');
+  form.classList.remove('ad-form--disabled');
   toggleElements(formList, false);
 };
 
@@ -58,7 +59,7 @@ const getMinPriceMessage = () => `Минимальная цена ${MIN_PRICE[ty
 
 const validateCapacity = () => CAPACITY_OPTIONS[roomAmount.value].includes(+capacityAmount.value);
 const getCapacityMessage = () => {
-  if (+roomAmount.value === 100) {
+  if (+roomAmount.value === ROOM_AMOUNT) {
     return 'Комнаты не для гостей';
   } else if (+capacityAmount.value > +roomAmount.value) {
     return 'Гостей не больше, чем комнат';
@@ -77,13 +78,13 @@ const onTypeHousingChange = () => {
 };
 
 const setSubmitButtonState = (value) => {
-  submitElement.disabled = value;
+  submitButton.disabled = value;
 };
 
 const onSendSuccess = () => {
   showSuccessMessage();
-  formElement.reset();
-  filterElement.reset();
+  form.reset();
+  filterMap.reset();
   resetPreviewFile();
   resetMap();
   setSubmitButtonState(false);
@@ -95,7 +96,7 @@ const onSendFailure = () => {
 };
 
 const initValidation = () => {
-  const pristine = new Pristine(formElement, {
+  const pristine = new Pristine(form, {
     classTo: 'ad-form__element',
     errorTextParent: 'ad-form__element',
     errorTextClass: 'ad-form__error',
@@ -109,12 +110,12 @@ const initValidation = () => {
   typeHousing.addEventListener('change', onTypeHousingChange);
 
   resetButton.addEventListener('click', () => {
-    filterElement.reset();
+    filterMap.reset();
     resetMap();
     resetPreviewFile();
   });
 
-  formElement.addEventListener('submit', (evt) => {
+  form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
 
@@ -126,7 +127,7 @@ const initValidation = () => {
 };
 
 const createSlider = () => {
-  noUiSlider.create(sliderElement, {
+  noUiSlider.create(slider, {
     range: {
       min: 0,
       max: MAX_PRICE,
@@ -140,12 +141,12 @@ const createSlider = () => {
     },
   });
 
-  sliderElement.noUiSlider.on('update', () => {
-    priceHousing.value = sliderElement.noUiSlider.get();
+  slider.noUiSlider.on('update', () => {
+    priceHousing.value = slider.noUiSlider.get();
   });
 
   priceHousing.addEventListener('change', (evt) => {
-    sliderElement.noUiSlider.set(evt.target.value);
+    slider.noUiSlider.set(evt.target.value);
   });
 };
 
