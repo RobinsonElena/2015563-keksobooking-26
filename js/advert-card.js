@@ -12,20 +12,20 @@ const cardTemplate = document.querySelector('#card')
 
 const createRentOfferCard = (advert) => {
   const {author, offer} = advert;
-  const cardElement = cardTemplate.cloneNode(true);
-  const photoList = cardElement.querySelector('.popup__photos');
-  const photoTemplate = cardElement.querySelector('.popup__photo');
-  const descriptionElement = cardElement.querySelector('.popup__description');
-  const featureContainer = cardElement.querySelector('.popup__features');
-  const featureList = cardElement.querySelectorAll('.popup__feature');
+  const card = cardTemplate.cloneNode(true);
+  const photoList = card.querySelector('.popup__photos');
+  const photoTemplate = card.querySelector('.popup__photo');
+  const description = card.querySelector('.popup__description');
+  const featureContainer = card.querySelector('.popup__features');
+  const featureList = card.querySelectorAll('.popup__feature');
 
-  cardElement.querySelector('.popup__avatar').src = author.avatar;
-  cardElement.querySelector('.popup__title').textContent = offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = offer.address;
-  cardElement.querySelector('.popup__text--price').innerHTML = `${offer.price} <span>₽/ночь</span>`;
-  cardElement.querySelector('.popup__type').textContent = typeDictionary[offer.type];
-  cardElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
-  cardElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
+  card.querySelector('.popup__avatar').src = author.avatar;
+  card.querySelector('.popup__title').textContent = offer.title;
+  card.querySelector('.popup__text--address').textContent = offer.address;
+  card.querySelector('.popup__text--price').innerHTML = `${offer.price} <span>₽/ночь</span>`;
+  card.querySelector('.popup__type').textContent = typeDictionary[offer.type];
+  card.querySelector('.popup__text--capacity').textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
+  card.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
 
   if (offer.photos && offer.photos.length > 0) {
     photoList.innerHTML = '';
@@ -39,9 +39,9 @@ const createRentOfferCard = (advert) => {
   }
 
   if (offer.description) {
-    descriptionElement.textContent = offer.description;
+    description.textContent = offer.description;
   } else {
-    descriptionElement.remove();
+    description.remove();
   }
 
   if (offer.features && offer.features.length > 0) {
@@ -52,7 +52,7 @@ const createRentOfferCard = (advert) => {
     featureContainer.remove();
   }
 
-  return cardElement;
+  return card;
 };
 
 export {

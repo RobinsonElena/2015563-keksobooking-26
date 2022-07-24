@@ -1,9 +1,9 @@
 import {isEscapeKey} from './util.js';
 
+const ALERT_SHOW_TIME = 5000;
+
 const adSuccess = document.querySelector('#success').content.querySelector('.success');
 const adError = document.querySelector('#error').content.querySelector('.error');
-
-const ALERT_SHOW_TIME = 5000;
 
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
@@ -36,11 +36,11 @@ const closeMessage = (element) => {
 const showSuccessMessage = () => {
   document.body.append(successMessage);
 
-  function closeSuccessMessage () {
+  const closeSuccessMessage = () => {
     closeMessage(successMessage);
     document.removeEventListener('click', closeSuccessMessage);
     document.removeEventListener('keydown', onSuccessEsc);
-  }
+  };
 
   function onSuccessEsc (evt) {
     if (isEscapeKey(evt)) {
@@ -55,11 +55,11 @@ const showSuccessMessage = () => {
 const showErrorMessage = () => {
   document.body.append(errorMessage);
 
-  function closeErrorMessage () {
+  const closeErrorMessage = () =>{
     closeMessage(errorMessage);
     document.removeEventListener('click', closeErrorMessage);
     document.removeEventListener('keydown', onErrorEsc);
-  }
+  };
 
   function onErrorEsc (evt) {
     if (isEscapeKey(evt)) {

@@ -22,22 +22,22 @@ const PRICE_LEVEL = {
   },
 };
 
-const formFilterElement = document.querySelector('.map__filters');
-const typeFilterElement = formFilterElement.querySelector('#housing-type');
-const priceFilterElement = formFilterElement.querySelector('#housing-price');
-const roomsFilterElement = formFilterElement.querySelector('#housing-rooms');
-const guestsFilterElement = formFilterElement.querySelector('#housing-guests');
-const featuresFilterElement = formFilterElement.querySelectorAll('.map__checkbox');
+const formFilter = document.querySelector('.map__filters');
+const typeFilter = formFilter.querySelector('#housing-type');
+const priceFilter = formFilter.querySelector('#housing-price');
+const roomsFilter = formFilter.querySelector('#housing-rooms');
+const guestsFilter = formFilter.querySelector('#housing-guests');
+const featuresFilter = formFilter.querySelectorAll('.map__checkbox');
 
-const filterByType = (offer) => typeFilterElement.value === DEFAULT_VALUE || offer.offer.type === typeFilterElement.value;
-const filterByRooms = (offer) => roomsFilterElement.value === DEFAULT_VALUE || offer.offer.rooms === +roomsFilterElement.value;
-const filterByGuests = (offer) => guestsFilterElement.value === DEFAULT_VALUE || offer.offer.guests === +guestsFilterElement.value;
+const filterByType = (offer) => typeFilter.value === DEFAULT_VALUE || offer.offer.type === typeFilter.value;
+const filterByRooms = (offer) => roomsFilter.value === DEFAULT_VALUE || offer.offer.rooms === +roomsFilter.value;
+const filterByGuests = (offer) => guestsFilter.value === DEFAULT_VALUE || offer.offer.guests === +guestsFilter.value;
 
 const filterByPrice = (offer) =>
-  offer.offer.price >= PRICE_LEVEL[priceFilterElement.value].min &&
-  offer.offer.price < PRICE_LEVEL[priceFilterElement.value].max;
+  offer.offer.price >= PRICE_LEVEL[priceFilter.value].min &&
+  offer.offer.price < PRICE_LEVEL[priceFilter.value].max;
 
-const filterByFeatures = (offer) => Array.from(featuresFilterElement).every((filterFeature) => {
+const filterByFeatures = (offer) => Array.from(featuresFilter).every((filterFeature) => {
   if (!filterFeature.checked) {
     return true;
   }
@@ -74,8 +74,8 @@ const onFilterChange = (data) => {
 };
 
 const setFilterListener = (data) => {
-  formFilterElement.addEventListener('change', debounce(() => onFilterChange(data)));
-  formFilterElement.addEventListener('reset', debounce(() => onFilterChange(data)));
+  formFilter.addEventListener('change', debounce(() => onFilterChange(data)));
+  formFilter.addEventListener('reset', debounce(() => onFilterChange(data)));
 };
 
 export {setFilterListener};
